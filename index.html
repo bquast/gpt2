@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>NIP-54 Articles (Simple Nostr Client)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>NIP-54 “Wikipedia-style” Articles</h1>
+    <p class="subtitle">very small, readable app — HTML/CSS/JS separated</p>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>relay & query</h2>
+      <form id="query-form" class="form-grid" autocomplete="off">
+        <label>
+          relay websocket url
+          <input id="relayUrl" type="url" required placeholder="wss://relay.example.org">
+        </label>
+
+        <label>
+          event kind (per spec on your relay)
+          <input id="eventKind" type="number" min="0" step="1" required value="30023">
+        </label>
+
+        <label>
+          max articles (N)
+          <input id="limitN" type="number" min="1" max="100" value="10" required>
+        </label>
+
+        <label>
+          optional tag filter (name)
+          <input id="tagName" type="text" placeholder="e.g. t or w">
+        </label>
+
+        <label>
+          optional tag value
+          <input id="tagValue" type="text" placeholder="e.g. wikipedia">
+        </label>
+
+        <div class="actions">
+          <button id="connectBtn" type="button">connect</button>
+          <button id="fetchBtn" type="submit" disabled>load articles</button>
+          <button id="disconnectBtn" type="button" disabled>disconnect</button>
+        </div>
+      </form>
+
+      <details class="hint">
+        <summary>how this works (short)</summary>
+        <p>
+          this page opens a WebSocket to the relay and sends a <code>REQ</code> with filters:
+          <code>{ kinds: [KIND], limit: N, "#tag": ["value"] }</code> if a tag is provided.
+          it lists the newest events; each article uses the first non-empty line as a title, and the rest as body.
+        </p>
+      </details>
+    </section>
+
+    <section class="panel">
+      <div class="status-line" id="status">status: idle</div>
+      <ol id="articles" class="article-list"></ol>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>
+      built for Cloudflare Pages. no dependencies. all client-side.
+    </small>
+  </footer>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
